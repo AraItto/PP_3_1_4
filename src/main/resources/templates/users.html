@@ -9,9 +9,9 @@
     <button type="submit">Logout</button>
 </form>
 <center>
-    <h1>User's page</h1>
+    <h1>Users List</h1>
     <div>
-        <table border="5">
+        <table border="10">
             <tr>
                 <th><p style="font-size: 16px;">ID</p></th>
                 <th><p style="font-size: 16px;">Name</p></th>
@@ -21,8 +21,9 @@
                 <th><p style="font-size: 16px;">Age</p></th>
                 <th><p style="font-size: 16px;">Email</p></th>
                 <th><p style="font-size: 16px;">Roles</p></th>
+                <th><p style="font-size: 16px;">Operations</p></th>
             </tr>
-            <tr>
+            <tr th:each="user : ${users}">
                 <td th:utext="${user.getId}"></td>
                 <td th:utext="${user.getName}"></td>
                 <td th:utext="${user.getSurname}"></td>
@@ -31,8 +32,20 @@
                 <td th:utext="${user.getAge}"></td>
                 <td th:utext="${user.getEmail}"></td>
                 <td th:utext="${user.getRoles}"></td>
+                <td>
+                    <form th:action="@{admin/updateUser/{id}(id=${user.id})}" th:object="${user}">
+                        <button type="submit">Update</button>
+                    </form>
+                    <form th:action="@{/admin/deleteUser/{id}(id=${user.id})}" th:object="${user}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
             </tr>
         </table>
+        <br>
+        <form th:action="@{admin/addNewUser}">
+            <button type="submit">Add</button>
+        </form>
     </div>
 </center>
 </body>

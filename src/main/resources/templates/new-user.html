@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New User</title>
+</head>
+<body>
+<form th:action="@{logout}">
+    <button type="submit">Logout</button>
+</form>
+<center>
+    <h1>Add new User</h1>
+    <form th:method="POST" th:action="@{saveUser}" th:object="${user}">
+        <table border="5">
+            <tr>
+                <th><label for="name">Name</label></th>
+                <td><input type="text" th:field="*{name}" id="name"/></td>
+            <tr/>
+            <tr>
+                <th><label for="surname">Surname</label></th>
+                <td><input type="text" th:field="*{surname}" id="surname"/></td>
+            <tr/>
+            <tr>
+                <th><label for="username">Username</label></th>
+                <td><input type="text" th:field="*{username}" id="username"/></td>
+            <tr/>
+            <tr>
+                <th><label for="password">Password</label></th>
+                <td><input type="text" th:field="*{password}" id="password"/></td>
+            <tr/>
+            <tr>
+                <th><label for="age">Age</label></th>
+                <td><input type="text" th:field="*{age}" id="age"/></td>
+            <tr/>
+            <tr>
+                <th><label for="email">Email</label></th>
+                <td><input type="text" th:field="*{email}" id="email"/></td>
+            <tr/>
+            <tr>
+                <th>Roles:</th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="role"
+                               th:each="role : ${roles}"
+                               th:text="${role.name}"
+                               th:value="${role.id}"/>
+                    </label>
+                </td>
+            </tr>
+            <input type="hidden" th:field="*{id}">
+            <br>
+        </table>
+        <input type="submit" value="OK"/>
+    </form>
+</center>
+</body>
+</html>
