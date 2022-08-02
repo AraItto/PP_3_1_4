@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
+import ru.kata.spring.boot_security.demo.entities.User;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserDetailsService, UserService{
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ru.kata.spring.boot_security.demo.entities.User myUser = userDao.findByUsername(username);
+        User myUser = userDao.findByUsername(username);
         if (myUser == null) {
             throw new UsernameNotFoundException("Unknown user: " + username);
         }
