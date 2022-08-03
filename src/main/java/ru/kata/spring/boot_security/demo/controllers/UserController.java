@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping
     public String printUser(@AuthenticationPrincipal UserDetails user, Model model) {
-        model.addAttribute("user", userService.loadUserByUsername(user.getUsername()));
+        model.addAttribute("currentUser", userService.loadUserByUsername(user.getUsername()));
         return "user";
     }
 }

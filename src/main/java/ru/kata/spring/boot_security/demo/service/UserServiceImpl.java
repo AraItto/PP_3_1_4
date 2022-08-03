@@ -20,29 +20,29 @@ public class UserServiceImpl implements UserDetailsService, UserService{
         this.userDao = userDao;
     }
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User myUser = userDao.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User myUser = userDao.findByUsername(email);
         if (myUser == null) {
-            throw new UsernameNotFoundException("Unknown user: " + username);
+            throw new UsernameNotFoundException("Unknown user: " + email);
         }
-        return new ru.kata.spring.boot_security.demo.entities.User(myUser.getId(), myUser.getName()
-                , myUser.getSurname(), myUser.getUsername(), myUser.getPassword(), myUser.getAge()
+        return new User(myUser.getId(), myUser.getName()
+                , myUser.getSurname(), myUser.getPassword(), myUser.getAge()
                 , myUser.getEmail(), (myUser.getRoles()));
     }
 
     @Transactional
     @Override
-    public void addUser(ru.kata.spring.boot_security.demo.entities.User user) {
+    public void addUser(User user) {
         userDao.addUser(user);
     }
 
     @Override
-    public List<ru.kata.spring.boot_security.demo.entities.User> getListUsers() {
+    public List<User> getListUsers() {
         return userDao.getListUsers();
     }
 
     @Override
-    public ru.kata.spring.boot_security.demo.entities.User getUserById(long id) {
+    public User getUserById(long id) {
         return userDao.getUserById(id);
     }
 

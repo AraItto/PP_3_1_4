@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,31 +26,20 @@ public class AdminController {
     }
 
     @GetMapping
-    public String printUsers(Model model) {
+    public String printUsers(@AuthenticationPrincipal UserDetails currentUser, Model model, User user) {
         model.addAttribute("users", userService.getListUsers());
-        return "users";
-    }
-
-    @GetMapping("/addNewUser")
-    public String addNewUser(User user, Model model) {
-        model.addAttribute("user", user);
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("roles", roleService.getRoleList());
-        return "new-user";
+        model.addAttribute("user", user);
+        return "admin";
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") User user, @RequestParam("role") List<String> role){
+    public String saveUser(User user, @RequestParam("role") List<String> role){
         Collection<Role> roleList = roleService.getSetOfRoles(role);
         user.setRoles(roleList);
         userService.addUser(user);
         return "redirect:/admin";
-    }
-
-    @RequestMapping("/updateUser/{id}")
-    public String updateUser(@PathVariable("id") long userId, Model model) {
-        model.addAttribute("user", userService.getUserById(userId));
-        model.addAttribute("roles", roleService.getRoleList());
-        return "user-info";
     }
 
     @RequestMapping("/deleteUser/{id}")
