@@ -1,20 +1,29 @@
 const url = 'http://localhost:8079/api/admin'
 
 const table = document.querySelector('#tbody-all')
-const currentUserTable = document.querySelector('#tbody-user')
 const headerInfoEl = document.querySelector('span')
 
-let result = ''
-let resCurrent = ''
-let resUserTable = ''
+let result = '';
+let resCurrent = '';
 
-const headerInfo = (currentUser) => {
-    resCurrent += `<strong>${currentUser.email}</strong><span> with roles: </span>`
-    currentUser.roles.forEach(role => {
-        resCurrent += `<span>${role.name.replaceAll('ROLE_', '')} </span>`
-    })
-    headerInfoEl.innerHTML = resCurrent
-}
+// const headerInfo = (currentUser) => {
+//     resCurrent += `<strong>${currentUser.email}</strong><span> with roles: </span>`
+//     currentUser.roles.forEach(role => {
+//         resCurrent += `<span>${role.name.replaceAll('ROLE_', '')} </span>`
+//     })
+//     headerInfoEl.innerHTML = resCurrent
+// }
+
+fetch("http://localhost:8079/api")
+    .then(res => { res.json().then(
+        currentUser=>{
+            resCurrent += `<strong>${currentUser.email}</strong><span> with roles: </span>`
+            currentUser.roles.forEach(role => {
+                resCurrent += `<span>${role.name.replaceAll('ROLE_', '')} </span>`
+            })
+            headerInfoEl.innerHTML = resCurrent
+        }
+    )})
 
 const usersTable = (allUsers) => {
     allUsers.forEach(user => {
@@ -61,6 +70,16 @@ const usersTable = (allUsers) => {
             document.getElementById('edit_password').value = `${user.password}`
             // document.getElementById('edit_roles_select').value = `${user.roles}`
             document.getElementById('editSuccess').onclick = () => {
+                let id = 0
+                let rolesList = [];
+                for (let i = 0; i < document.getElementById('edit_roles_select').value.length; i++) {
+                    if (document.getElementById('edit_roles_select').value[i] === 'ROLE_ADMIN') {
+                        id = 1
+                    } else {
+                        id = 2
+                    }
+                    rolesList[i] = {id: `${id}`, role: document.getElementById('edit_roles_select').value[i]};
+                }
                 let user = {
                     id: document.getElementById('edit_id').value,
                     name: document.getElementById('edit_name').value,
@@ -68,14 +87,10 @@ const usersTable = (allUsers) => {
                     age: document.getElementById('edit_age').value,
                     email: document.getElementById('edit_email').value,
                     password: document.getElementById('edit_password').value,
-                    roles: [{
-                        id: 2,
-                        name: 'ROLE_USER'
-                    }]
+                    roles: `${rolesList}`
                 }
                 console.log(user)
                 patchRequest(user)
-                    .then(user => console.log(user))
             }
         })
         const btnDelete = document.getElementById(`deleteBtn${user.id}`)
@@ -95,44 +110,67 @@ const usersTable = (allUsers) => {
 }
 
 async function patchRequest(user) {
-    // let path = window.location.origin + url
-    await fetch('http://localhost:8079/api/admin', {
-        method: "PATCH",
-        headers: {"Content-type": "application/json; charset=UTF-8"},
+    await fetch(url, {
+        method: 'PATCH',
+        headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     })
+        // .then(response => response.json())
+        // .then(data => {
+        //     const editUserInTable = []
+        //     editUserInTable.push(data)
+        //     usersTable(editUserInTable)
+        // })
 }
 
 async function postRequest(user) {
-    // let path = window.location.origin + url
-    await fetch('http://localhost:8079/api/admin', {
-        method: "POST",
-        headers: {"Content-type": "application/json; charset=UTF-8"},
+    await fetch(url, {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     })
+
 }
 
 async function deleteRequest(url) {
     console.log('Deleting')
     let path = window.location.origin + url
     await fetch(path, {
-        method: "DELETE",
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        method: 'DELETE',
+        headers: {'Content-type': 'application/json'}
     })
 }
 
 // ---------------------------------------------------------------------
 
 document.getElementById('addNewUserBtn').addEventListener('click', (e) => {
+    e.preventDefault()
+    let id = 0
+    let rolesList = [];
+    for (let i = 0; i < document.getElementById('roles').value.length; i++) {
+        if (document.getElementById('roles').value[i] === 'ROLE_ADMIN') {
+            id = 1
+        } else {
+            id = 2
+        }
+        rolesList[i] = {id: `${id}`, role: `${document.getElementById('roles').value[i]}`};
+    }
         let newUser = {
             name: document.getElementById('new_name').value,
             surname: document.getElementById('new_surname').value,
             age: document.getElementById('new_age').value,
             email: document.getElementById('new_email').value,
             password: document.getElementById('new_password').value,
-            roles: [{id: 2, name: "ROLE_USER"}]
+            roles: rolesList
         }
         postRequest(newUser)
+            .then(response => response.json())
+            .then(data => {
+                const newUserInTable = []
+                newUserInTable.push(data)
+                usersTable(newUserInTable)
+            })
+            .then(() => document.getElementById('table_users').click())
 })
 
 // ---------------------------------------------------------------------
@@ -140,37 +178,13 @@ document.getElementById('addNewUserBtn').addEventListener('click', (e) => {
 
 // ---------------------------------------------------------------------
 
-const userTable = (currentUser) => {
-    resUserTable += `
-                <tr>
-                    <td>${currentUser.id}</td>
-                    <td>${currentUser.name}</td>
-                    <td>${currentUser.surname}</td>
-                    <td>${currentUser.age}</td>
-                    <td>${currentUser.email}</td>
-                    <td>
-    `
-    currentUser.roles.forEach(role => {
-        resUserTable += `
-                    <a>${role.name.replaceAll('ROLE_', '')}</a>
-            `
-    })
-    resUserTable += `</td>
-                          </tr>`
-    currentUserTable.innerHTML = resUserTable
-}
-
-fetch(url)
+fetch('http://localhost:8079/api/admin')
     .then(response => response.json())
     .then(data => usersTable(data))
 
-fetch(url + '/currentUser')
-    .then(response => response.json())
-    .then(data => headerInfo(data))
-
-fetch(url + '/currentUser')
-    .then(response => response.json())
-    .then(data => userTable(data))
+// fetch(url + '/currentUser')
+//     .then(response => response.json())
+//     .then(data => headerInfo(data))
 
 
 

@@ -23,6 +23,7 @@ public class UserDaoImp implements UserDao{
 
     @Override
     public void updateUser(User user) {
+        user.setRoles(user.getRoles());
         entityManager.merge(user);
     }
 

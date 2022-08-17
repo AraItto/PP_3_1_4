@@ -10,7 +10,7 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api")
 public class AdminRestController {
 
     private final UserServiceImpl userService;
@@ -19,31 +19,32 @@ public class AdminRestController {
         this.userService = userService;
     }
 
-    @GetMapping()
+    @GetMapping("/admin")
     public List<User> getAllUsers() {
         return userService.getListUsers();
     }
 
-    @GetMapping("/currentUser")
+    @GetMapping()
     public UserDetails userView(@AuthenticationPrincipal UserDetails currentUser) {
         return userService.loadUserByUsername(currentUser.getUsername());
     }
 
-    @PostMapping()
+    @PostMapping("/admin")
     public User saveUser(@RequestBody User user) {
-        System.out.println(user);
+        user.getRoles().forEach(role -> System.out.println(role.getName()));
         userService.addUser(user);
+        user.getRoles().forEach(role -> System.out.println(role.getName()));
         return user;
     }
 
-    @PatchMapping()
+    @PatchMapping("/admin/{id}")
     public void updateUser(@RequestBody User user) {
         System.out.println(user);
         userService.updateUser(user);
 //        return user;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public void deleteUser(@PathVariable("id") long id) {
         System.out.println(id);
         userService.deleteUserById(id);
