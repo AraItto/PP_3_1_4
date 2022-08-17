@@ -15,15 +15,17 @@ let resCurrent = '';
 // }
 
 fetch("http://localhost:8079/api")
-    .then(res => { res.json().then(
-        currentUser=>{
-            resCurrent += `<strong>${currentUser.email}</strong><span> with roles: </span>`
-            currentUser.roles.forEach(role => {
-                resCurrent += `<span>${role.name.replaceAll('ROLE_', '')} </span>`
-            })
-            headerInfoEl.innerHTML = resCurrent
-        }
-    )})
+    .then(res => {
+        res.json().then(
+            currentUser => {
+                resCurrent += `<strong>${currentUser.email}</strong><span> with roles: </span>`
+                currentUser.roles.forEach(role => {
+                    resCurrent += `<span>${role.name.replaceAll('ROLE_', '')} </span>`
+                })
+                headerInfoEl.innerHTML = resCurrent
+            }
+        )
+    })
 
 const usersTable = (allUsers) => {
     allUsers.forEach(user => {
@@ -62,6 +64,7 @@ const usersTable = (allUsers) => {
     allUsers.forEach(user => {
         const btn = document.getElementById(`editBtn${user.id}`)
         btn.addEventListener('click', (e) => {
+            // e.preventDefault()
             document.getElementById('edit_id').value = `${user.id}`
             document.getElementById('edit_name').value = `${user.name}`
             document.getElementById('edit_surname').value = `${user.surname}`
@@ -69,16 +72,19 @@ const usersTable = (allUsers) => {
             document.getElementById('edit_email').value = `${user.email}`
             document.getElementById('edit_password').value = `${user.password}`
             // document.getElementById('edit_roles_select').value = `${user.roles}`
-            document.getElementById('editSuccess').onclick = () => {
-                let id = 0
+
+            const editBtn = document.getElementById('editSuccess')
+            editBtn.onclick = (e) => {
+                e.preventDefault()
                 let rolesList = [];
-                for (let i = 0; i < document.getElementById('edit_roles_select').value.length; i++) {
-                    if (document.getElementById('edit_roles_select').value[i] === 'ROLE_ADMIN') {
-                        id = 1
-                    } else {
-                        id = 2
-                    }
-                    rolesList[i] = {id: `${id}`, role: document.getElementById('edit_roles_select').value[i]};
+                if (document.getElementById('1').selected && document.getElementById('2').selected) {
+                    rolesList = [{id: 1, name: 'ROLE_ADMIN'}, {id: 2, name: 'ROLE_USER'}]
+                } else if (document.getElementById('1').selected) {
+                    rolesList[0] = {id: 1, name: 'ROLE_ADMIN'}
+                } else if (document.getElementById('2').selected) {
+                    rolesList[0] = {id: 2, name: 'ROLE_USER'}
+                } else {
+                    rolesList[0] = {id: 2, name: 'ROLE_USER'}
                 }
                 let user = {
                     id: document.getElementById('edit_id').value,
@@ -87,22 +93,21 @@ const usersTable = (allUsers) => {
                     age: document.getElementById('edit_age').value,
                     email: document.getElementById('edit_email').value,
                     password: document.getElementById('edit_password').value,
-                    roles: `${rolesList}`
+                    roles: rolesList
                 }
-                console.log(user)
                 patchRequest(user)
             }
         })
         const btnDelete = document.getElementById(`deleteBtn${user.id}`)
-        btnDelete.addEventListener('click', (e) => {
-            document.getElementById('delete_id').value = `${user.id}`
-            document.getElementById('delete_name').value = `${user.name}`
-            document.getElementById('delete_surname').value = `${user.surname}`
-            document.getElementById('delete_age').value = `${user.age}`
-            document.getElementById('delete_email').value = `${user.email}`
-            document.getElementById('delete_roles').value = `${user.roles}`
-            document.getElementById('deleteBtn').onclick = () => {
-
+        btnDelete.addEventListener('click', () => {
+            // e.preventDefault()
+            document.getElementById('delete_id').value = user.id
+            document.getElementById('delete_name').value = user.name
+            document.getElementById('delete_surname').value = user.surname
+            document.getElementById('delete_age').value = user.age
+            document.getElementById('delete_email').value = user.email
+            document.getElementById('deleteBtn').onclick = (e) => {
+                e.preventDefault()
                 deleteRequest(`/api/admin/${user.id}`)
             }
         })
@@ -115,12 +120,13 @@ async function patchRequest(user) {
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     })
-        // .then(response => response.json())
-        // .then(data => {
-        //     const editUserInTable = []
-        //     editUserInTable.push(data)
-        //     usersTable(editUserInTable)
-        // })
+        .then(response => response.json())
+        .then(data => {
+            const editUserInTable = []
+            editUserInTable.push(data)
+            usersTable(editUserInTable)
+        })
+        .then(() => getUsers())
 }
 
 async function postRequest(user) {
@@ -129,7 +135,13 @@ async function postRequest(user) {
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     })
-
+        .then(response => response.json())
+        .then(data => {
+            const newUserInTable = []
+            newUserInTable.push(data)
+            usersTable(newUserInTable)
+        })
+        .then(() => document.getElementById('tableUsers').click())
 }
 
 async function deleteRequest(url) {
@@ -145,32 +157,27 @@ async function deleteRequest(url) {
 
 document.getElementById('addNewUserBtn').addEventListener('click', (e) => {
     e.preventDefault()
-    let id = 0
+    let name = ''
     let rolesList = [];
-    for (let i = 0; i < document.getElementById('roles').value.length; i++) {
-        if (document.getElementById('roles').value[i] === 'ROLE_ADMIN') {
-            id = 1
-        } else {
-            id = 2
-        }
-        rolesList[i] = {id: `${id}`, role: `${document.getElementById('roles').value[i]}`};
+    if (document.getElementById('1').selected && document.getElementById('2').selected) {
+        rolesList = [{id: 1, name: 'ROLE_ADMIN'}, {id: 2, name: 'ROLE_USER'}]
+    } else if (document.getElementById('1').selected) {
+        rolesList[0] = {id: 1, name: 'ROLE_ADMIN'}
+    } else if (document.getElementById('2').selected) {
+        rolesList[0] = {id: 2, name: 'ROLE_USER'}
+    } else {
+        rolesList[0] = {id: 2, name: 'ROLE_USER'}
     }
-        let newUser = {
-            name: document.getElementById('new_name').value,
-            surname: document.getElementById('new_surname').value,
-            age: document.getElementById('new_age').value,
-            email: document.getElementById('new_email').value,
-            password: document.getElementById('new_password').value,
-            roles: rolesList
-        }
-        postRequest(newUser)
-            .then(response => response.json())
-            .then(data => {
-                const newUserInTable = []
-                newUserInTable.push(data)
-                usersTable(newUserInTable)
-            })
-            .then(() => document.getElementById('table_users').click())
+    let newUser = {
+        name: document.getElementById('new_name').value,
+        surname: document.getElementById('new_surname').value,
+        age: document.getElementById('new_age').value,
+        email: document.getElementById('new_email').value,
+        password: document.getElementById('new_password').value,
+        roles: rolesList
+    }
+    postRequest(newUser)
+
 })
 
 // ---------------------------------------------------------------------

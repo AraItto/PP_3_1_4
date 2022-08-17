@@ -43,7 +43,7 @@
             <nav>
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#table_users">Users table</a>
+                        <a class="nav-link active" data-bs-toggle="tab" href="#table_users" id="tableUsers">Users table</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#new_user">New user</a>
@@ -99,8 +99,8 @@
 
                                             <label for="roles" class="col-form-label">Roles</label>
                                             <select class="form-control select" name="rolesList" id="roles" size="2" multiple >
-                                                <option value="ROLE_ADMIN">ADMIN</option>
-                                                <option value="ROLE_USER">USER</option>
+                                                <option value="1">ADMIN</option>
+                                                <option value="2">USER</option>
                                             </select>
                                             <br>
                                             <button id="addNewUserBtn" type="submit" class="btn btn-lg btn-success">
@@ -160,11 +160,11 @@
                                    id="edit_password" class="form-control"/>
 
                             <label for="edit_roles_select"><strong>Role</strong></label>
-                            <select class="form-select"
+                            <select class="form-select" name="edit_roles_select"
                                     id="edit_roles_select"
                                     multiple size="2">
-                                <option value="1">ADMIN</option>
-                                <option value="2">USER</option>
+                                <option class="edit" id="1">ADMIN</option>
+                                <option class="edit" id="2">USER</option>
                             </select>
                             <div class="modal-footer">
                                 <button type="button"
@@ -172,7 +172,7 @@
                                         data-bs-dismiss="modal">Close
                                 </button>
                                 <button id="editSuccess" type="submit"
-                                        class="btn btn-primary">
+                                        class="btn btn-primary" data-bs-dismiss="modal">
                                     Edit
                                 </button>
                             </div>
@@ -226,8 +226,8 @@
                                     class="form-control"
                                     id="delete_roles">
                                 <div>
-                                    <option value="1">ADMIN</option>
-                                    <option value="2">USER</option>
+                                    <option disabled value="1">ADMIN</option>
+                                    <option disabled value="2">USER</option>
                                 </div>
                             </select>
                             <div class="modal-footer">
@@ -236,7 +236,7 @@
                                         data-bs-dismiss="modal">Close
                                 </button>
                                 <button id="deleteBtn" type="submit"
-                                        class="btn btn-danger">
+                                        class="btn btn-danger" data-bs-dismiss="modal">
                                     Delete
                                 </button>
                             </div>

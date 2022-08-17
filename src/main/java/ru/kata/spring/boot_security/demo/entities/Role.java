@@ -18,12 +18,12 @@ public class Role implements GrantedAuthority {
     @Column(name = "name")
     private String name;
 
-//    @Transient
-//    @ManyToMany(mappedBy = "roles")
-//    @JoinTable( name = "users_roles",
-//    joinColumns = @JoinColumn(name = "roles_id"),
-//    inverseJoinColumns = @JoinColumn(name = "users_id"))
-//    private Set<User> users;
+    @Transient
+    @ManyToMany(mappedBy = "roles")
+    @JoinTable( name = "users_roles",
+    joinColumns = @JoinColumn(name = "roles_id"),
+    inverseJoinColumns = @JoinColumn(name = "users_id"))
+    private Set<User> users;
 
     public Role() {}
 
@@ -47,13 +47,13 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-//    public Collection<User> getUsers() {
-//        return users;
-//    }
+    public Collection<User> getUsers() {
+        return users;
+    }
 
-//    public void setUsers(Set<User> users) {
-//        this.users = users;
-//    }
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 
     @Override
     public String toString() {

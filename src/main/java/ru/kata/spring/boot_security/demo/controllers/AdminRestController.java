@@ -4,9 +4,11 @@ import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -37,9 +39,10 @@ public class AdminRestController {
         return user;
     }
 
-    @PatchMapping("/admin/{id}")
-    public void updateUser(@RequestBody User user) {
+    @PatchMapping("/admin")
+    public void updateUser(@RequestBody User user) {;
         System.out.println(user);
+        System.out.println(user.getRoles().size());
         userService.updateUser(user);
 //        return user;
     }

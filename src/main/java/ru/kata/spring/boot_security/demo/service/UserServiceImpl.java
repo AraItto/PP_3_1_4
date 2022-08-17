@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserDetailsService, UserService{
         }
         return new User(myUser.getId(), myUser.getName()
                 , myUser.getSurname(), myUser.getPassword(), myUser.getAge()
-                , myUser.getEmail(), (myUser.getRoles()));
+                , myUser.getEmail(), myUser.getRoles());
     }
 
     @Transactional
