@@ -25,26 +25,26 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping
-    public String printUsers(@AuthenticationPrincipal UserDetails currentUser, Model model, User user) {
-        model.addAttribute("users", userService.getListUsers());
+    @GetMapping()
+    public String printUsers(@AuthenticationPrincipal UserDetails currentUser, Model model) {
+//        model.addAttribute("users", userService.getListUsers());
         model.addAttribute("currentUser", currentUser);
-        model.addAttribute("roles", roleService.getRoleList());
-        model.addAttribute("user", user);
+//        model.addAttribute("roles", roleService.getRoleList());
+//        model.addAttribute("user", user);
         return "admin";
     }
 
-    @PostMapping("/saveUser")
-    public String saveUser(User user, @RequestParam("role") List<String> role){
-        Collection<Role> roleList = roleService.getSetOfRoles(role);
-        user.setRoles(roleList);
-        userService.addUser(user);
-        return "redirect:/admin";
-    }
+//    @PostMapping("/saveUser")
+//    public String saveUser(User user, @RequestParam("role") List<String> role){
+//        Collection<Role> roleList = roleService.getSetOfRoles(role);
+//        user.setRoles(roleList);
+//        userService.addUser(user);
+//        return "redirect:/admin";
+//    }
 
-    @RequestMapping("/deleteUser/{id}")
-    public String deleteUser(@PathVariable("id") long userId) {
-        userService.deleteUserById(userId);
-        return "redirect:/admin";
-    }
+//    @RequestMapping("/deleteUser/{id}")
+//    public String deleteUser(@PathVariable("id") long userId) {
+//        userService.deleteUserById(userId);
+//        return "redirect:/admin";
+//    }
 }

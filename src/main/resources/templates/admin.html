@@ -25,10 +25,8 @@
                     </li>
                 </ul>
                 <span class="navbar-text">
-        <th:block th:if="${#request.userPrincipal}">
-          <a class="nav-link text-secondary" th:href="@{/logout}">Logout</a>
-        </th:block>
-      </span>
+                    <a class="nav-link text-secondary" href="logout">Logout</a>
+                </span>
             </div>
         </div>
     </div>
@@ -84,29 +82,27 @@
                                     <form class="text-center">
                                         <div class="form-group" id="new-user-form">
                                             <label for="new_name"><strong>First name</strong></label>
-                                            <input type="text" name="name" id="new_name" class="form-control"/>
+                                            <input type="text" name="name" id="new_name" class="form-control feildtext"/>
 
                                             <label for="new_surname"><strong>Last name</strong></label>
-                                            <input type="text" name="surname" id="new_surname" class="form-control"/>
+                                            <input type="text" name="surname" id="new_surname" class="form-control feildtext"/>
 
                                             <label for="new_age"><strong>Age</strong></label>
-                                            <input type="number" name="age" id="new_age" class="form-control"/>
+                                            <input type="number" name="age" id="new_age" class="form-control feildtext"/>
 
                                             <label for="new_email"><strong>Email</strong></label>
-                                            <input type="text" name="email" id="new_email" class="form-control"/>
+                                            <input type="text" name="email" id="new_email" class="form-control feildtext"/>
 
                                             <label for="new_password"><strong>Password</strong></label>
                                             <input type="password" name="password" id="new_password"
-                                                   class="form-control"/>
+                                                   class="form-control feildtext"/>
 
                                             <label for="new_roles_select"><strong>Role</strong></label>
                                             <select class="form-select" id="new_roles_select"
                                                     name="role" multiple size="2">
                                                 <option value="1">ADMIN</option>
-                                                <option value="2">USER</option>
+                                                <option value="20">USER</option>
                                             </select>
-
-                                            <!--                                            <input type="hidden" th:field="${user.id}">-->
                                             <br>
                                             <button id="addNewUserBtn" type="submit" class="btn btn-lg btn-success">
                                                 Add new user

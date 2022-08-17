@@ -18,7 +18,12 @@ public class UserDaoImp implements UserDao{
 
     @Override
     public void addUser(User user) {
-        entityManager.unwrap(Session.class).saveOrUpdate(user);
+        entityManager.persist(user);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        entityManager.merge(user);
     }
 
     @Override

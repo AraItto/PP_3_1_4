@@ -29,16 +29,18 @@ public class AdminRestController {
         return userService.loadUserByUsername(currentUser.getUsername());
     }
 
-//    @PostMapping()
-//    public User saveUser(@RequestBody User user) {
-//        userService.addUser(user);
-//        return user;
-//    }
-
-    @PatchMapping("/user")
+    @PostMapping()
     public User saveUser(@RequestBody User user) {
+        System.out.println(user);
         userService.addUser(user);
         return user;
+    }
+
+    @PatchMapping()
+    public void updateUser(@RequestBody User user) {
+        System.out.println(user);
+        userService.updateUser(user);
+//        return user;
     }
 
     @DeleteMapping("/{id}")
