@@ -20,9 +20,6 @@ public class User implements UserDetails {
     @Column(name = "surname")
     private String surname;
 
-//    @Column(name = "username")
-//    private String username;
-
     @Column(name = "password")
     private String password;
 
@@ -44,7 +41,6 @@ public class User implements UserDetails {
         this.id = id;
         this.name = name;
         this.surname = surname;
-//        this.username = username;
         this.password = password;
         this.age = age;
         this.email = email;

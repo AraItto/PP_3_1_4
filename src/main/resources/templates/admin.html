@@ -79,7 +79,7 @@
                             <div class="col-4"></div>
                             <div class="col-5">
                                 <div class="card-body">
-                                    <form class="text-center">
+                                    <form class="text-center" id="newUser">
                                         <div class="form-group" id="new-user-form">
                                             <label for="new_name"><strong>First name</strong></label>
                                             <input type="text" name="name" id="new_name" class="form-control"/>
@@ -99,8 +99,8 @@
 
                                             <label for="roles" class="col-form-label">Roles</label>
                                             <select class="form-control select" name="rolesList" id="roles" size="2" multiple >
-                                                <option value="1">ADMIN</option>
-                                                <option value="2">USER</option>
+                                                <option id="1-new">ADMIN</option>
+                                                <option id="2-new">USER</option>
                                             </select>
                                             <br>
                                             <button id="addNewUserBtn" type="submit" class="btn btn-lg btn-success">

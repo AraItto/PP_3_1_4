@@ -1,14 +1,13 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -33,23 +32,18 @@ public class AdminRestController {
 
     @PostMapping("/admin")
     public User saveUser(@RequestBody User user) {
-        user.getRoles().forEach(role -> System.out.println(role.getName()));
         userService.addUser(user);
-        user.getRoles().forEach(role -> System.out.println(role.getName()));
         return user;
     }
 
-    @PatchMapping("/admin")
-    public void updateUser(@RequestBody User user) {;
-        System.out.println(user);
-        System.out.println(user.getRoles().size());
+    @PatchMapping("/admin/{id}")
+    public User updateUser(@RequestBody User user) {
         userService.updateUser(user);
-//        return user;
+        return user;
     }
 
     @DeleteMapping("/admin/{id}")
     public void deleteUser(@PathVariable("id") long id) {
-        System.out.println(id);
         userService.deleteUserById(id);
     }
 }

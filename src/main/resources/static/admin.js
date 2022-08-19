@@ -6,13 +6,6 @@ const headerInfoEl = document.querySelector('span')
 let result = '';
 let resCurrent = '';
 
-// const headerInfo = (currentUser) => {
-//     resCurrent += `<strong>${currentUser.email}</strong><span> with roles: </span>`
-//     currentUser.roles.forEach(role => {
-//         resCurrent += `<span>${role.name.replaceAll('ROLE_', '')} </span>`
-//     })
-//     headerInfoEl.innerHTML = resCurrent
-// }
 
 fetch("http://localhost:8079/api")
     .then(res => {
@@ -30,7 +23,7 @@ fetch("http://localhost:8079/api")
 const usersTable = (allUsers) => {
     allUsers.forEach(user => {
         result += `
-                <tr>
+                <tr id="row${user.id}">
                     <td>${user.id}</td>
                     <td>${user.name}</td>
                     <td>${user.surname}</td>
@@ -70,8 +63,13 @@ const usersTable = (allUsers) => {
             document.getElementById('edit_surname').value = `${user.surname}`
             document.getElementById('edit_age').value = `${user.age}`
             document.getElementById('edit_email').value = `${user.email}`
-            document.getElementById('edit_password').value = `${user.password}`
-            // document.getElementById('edit_roles_select').value = `${user.roles}`
+            // document.getElementById('edit_password').value = `${user.password}`
+            document.getElementById('1').selected = user.roles[0].id === 1
+            document.getElementById('2').selected = user.roles[0].id === 2
+            if(user.roles.length > 1) {
+                document.getElementById('1').selected = true
+                document.getElementById('2').selected = true
+            }
 
             const editBtn = document.getElementById('editSuccess')
             editBtn.onclick = (e) => {
@@ -108,14 +106,14 @@ const usersTable = (allUsers) => {
             document.getElementById('delete_email').value = user.email
             document.getElementById('deleteBtn').onclick = (e) => {
                 e.preventDefault()
-                deleteRequest(`/api/admin/${user.id}`)
+                deleteRequest(user.id)
             }
         })
     })
 }
 
 async function patchRequest(user) {
-    await fetch(url, {
+    await fetch(url+`/${user.id}`, {
         method: 'PATCH',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
@@ -125,8 +123,9 @@ async function patchRequest(user) {
             const editUserInTable = []
             editUserInTable.push(data)
             usersTable(editUserInTable)
+            document.getElementById(`row${user.id}`).remove()
         })
-        .then(() => getUsers())
+
 }
 
 async function postRequest(user) {
@@ -141,16 +140,16 @@ async function postRequest(user) {
             newUserInTable.push(data)
             usersTable(newUserInTable)
         })
+        .then(() => document.getElementById('newUser').reset())
         .then(() => document.getElementById('tableUsers').click())
 }
 
-async function deleteRequest(url) {
-    console.log('Deleting')
-    let path = window.location.origin + url
-    await fetch(path, {
+async function deleteRequest(id) {
+    await fetch(url+`/${id}`, {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'}
     })
+        .then(()=>document.getElementById(`row${id}`).remove())
 }
 
 // ---------------------------------------------------------------------
@@ -159,11 +158,11 @@ document.getElementById('addNewUserBtn').addEventListener('click', (e) => {
     e.preventDefault()
     let name = ''
     let rolesList = [];
-    if (document.getElementById('1').selected && document.getElementById('2').selected) {
+    if (document.getElementById('1-new').selected && document.getElementById('2-new').selected) {
         rolesList = [{id: 1, name: 'ROLE_ADMIN'}, {id: 2, name: 'ROLE_USER'}]
-    } else if (document.getElementById('1').selected) {
+    } else if (document.getElementById('1-new').selected) {
         rolesList[0] = {id: 1, name: 'ROLE_ADMIN'}
-    } else if (document.getElementById('2').selected) {
+    } else if (document.getElementById('2-new').selected) {
         rolesList[0] = {id: 2, name: 'ROLE_USER'}
     } else {
         rolesList[0] = {id: 2, name: 'ROLE_USER'}
@@ -177,21 +176,13 @@ document.getElementById('addNewUserBtn').addEventListener('click', (e) => {
         roles: rolesList
     }
     postRequest(newUser)
-
 })
 
-// ---------------------------------------------------------------------
-
-
-// ---------------------------------------------------------------------
 
 fetch('http://localhost:8079/api/admin')
     .then(response => response.json())
     .then(data => usersTable(data))
 
-// fetch(url + '/currentUser')
-//     .then(response => response.json())
-//     .then(data => headerInfo(data))
 
 
 
