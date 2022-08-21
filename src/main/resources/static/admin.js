@@ -1,4 +1,4 @@
-const url = 'http://localhost:8079/api/admin'
+const url = 'http://localhost:8080/api/admin'
 
 const table = document.querySelector('#tbody-all')
 const headerInfoEl = document.querySelector('span')
@@ -7,7 +7,7 @@ let result = '';
 let resCurrent = '';
 
 
-fetch("http://localhost:8079/api")
+fetch("http://localhost:8080/api")
     .then(res => {
         res.json().then(
             currentUser => {
@@ -57,19 +57,18 @@ const usersTable = (allUsers) => {
     allUsers.forEach(user => {
         const btn = document.getElementById(`editBtn${user.id}`)
         btn.addEventListener('click', (e) => {
-            // e.preventDefault()
-            document.getElementById('edit_id').value = `${user.id}`
-            document.getElementById('edit_name').value = `${user.name}`
-            document.getElementById('edit_surname').value = `${user.surname}`
-            document.getElementById('edit_age').value = `${user.age}`
-            document.getElementById('edit_email').value = `${user.email}`
-            // document.getElementById('edit_password').value = `${user.password}`
-            document.getElementById('1').selected = user.roles[0].id === 1
-            document.getElementById('2').selected = user.roles[0].id === 2
-            if(user.roles.length > 1) {
-                document.getElementById('1').selected = true
-                document.getElementById('2').selected = true
-            }
+            const realUser = document.getElementById(`row${user.id}`).children
+            document.getElementById('edit_id').value = realUser[0].innerHTML
+            document.getElementById('edit_name').value = realUser[1].innerHTML
+            document.getElementById('edit_surname').value = realUser[2].innerHTML
+            document.getElementById('edit_age').value = realUser[3].innerHTML
+            document.getElementById('edit_email').value = realUser[4].innerHTML
+            document.getElementById('1').selected = realUser[5].innerHTML.search('ADMIN') > 0
+            document.getElementById('2').selected = realUser[5].innerHTML.search('USER') > 0
+            // if (user.roles.length > 1) {
+            //     document.getElementById('1').selected = true
+            //     document.getElementById('2').selected = true
+            // }
 
             const editBtn = document.getElementById('editSuccess')
             editBtn.onclick = (e) => {
@@ -113,19 +112,23 @@ const usersTable = (allUsers) => {
 }
 
 async function patchRequest(user) {
-    await fetch(url+`/${user.id}`, {
+    await fetch(url + `/${user.id}`, {
         method: 'PATCH',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     })
-        .then(response => response.json())
-        .then(data => {
-            const editUserInTable = []
-            editUserInTable.push(data)
-            usersTable(editUserInTable)
-            document.getElementById(`row${user.id}`).remove()
-        })
-
+    .then(response => response.json())
+    .then(()=>
+        document.getElementById(`row${user.id}`).children[1].innerHTML=`${user.name}`)
+        .then(()=>
+            document.getElementById(`row${user.id}`).children[2].innerHTML=`${user.surname}`)
+        .then(()=>
+            document.getElementById(`row${user.id}`).children[3].innerHTML=`${user.age}`)
+        .then(()=>
+            document.getElementById(`row${user.id}`).children[4].innerHTML=`${user.email}`)
+        .then(()=>
+            user.roles.forEach(role =>
+            document.getElementById(`row${user.id}`).children[5].innerHTML=`${role.name.replaceAll('ROLE_','')}`))
 }
 
 async function postRequest(user) {
@@ -145,11 +148,11 @@ async function postRequest(user) {
 }
 
 async function deleteRequest(id) {
-    await fetch(url+`/${id}`, {
+    await fetch(url + `/${id}`, {
         method: 'DELETE',
         headers: {'Content-type': 'application/json'}
     })
-        .then(()=>document.getElementById(`row${id}`).remove())
+        .then(() => document.getElementById(`row${id}`).remove())
 }
 
 // ---------------------------------------------------------------------
@@ -179,7 +182,7 @@ document.getElementById('addNewUserBtn').addEventListener('click', (e) => {
 })
 
 
-fetch('http://localhost:8079/api/admin')
+fetch('http://localhost:8080/api/admin')
     .then(response => response.json())
     .then(data => usersTable(data))
 

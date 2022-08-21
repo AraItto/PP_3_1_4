@@ -1,4 +1,4 @@
-const url = 'http://localhost:8079/api/user'
+const url = 'http://localhost:8080/api/user'
 
 fetch(url + '/currentUser')
     .then(response => response.json())
