@@ -21,29 +21,30 @@ public class AdminRestController {
     }
 
     @GetMapping("/admin")
-    public List<User> getAllUsers() {
-        return userService.getListUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.getListUsers(),HttpStatus.OK);
     }
 
     @GetMapping()
-    public UserDetails userView(@AuthenticationPrincipal UserDetails currentUser) {
-        return userService.loadUserByUsername(currentUser.getUsername());
+    public ResponseEntity<UserDetails> userView(@AuthenticationPrincipal UserDetails currentUser) {
+        return new ResponseEntity<>(userService.loadUserByUsername(currentUser.getUsername()),HttpStatus.OK);
     }
 
     @PostMapping("/admin")
-    public User saveUser(@RequestBody User user) {
+    public ResponseEntity<User> saveUser(@RequestBody User user) {
         userService.addUser(user);
-        return user;
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @PatchMapping("/admin/{id}")
-    public User updateUser(@RequestBody User user) {
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.updateUser(user);
-        return user;
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/{id}")
-    public void deleteUser(@PathVariable("id") long id) {
+    public ResponseEntity<Long> deleteUser(@PathVariable long id) {
         userService.deleteUserById(id);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 }

@@ -57,18 +57,18 @@ const usersTable = (allUsers) => {
     allUsers.forEach(user => {
         const btn = document.getElementById(`editBtn${user.id}`)
         btn.addEventListener('click', (e) => {
-            const realUser = document.getElementById(`row${user.id}`).children
-            document.getElementById('edit_id').value = realUser[0].innerHTML
-            document.getElementById('edit_name').value = realUser[1].innerHTML
-            document.getElementById('edit_surname').value = realUser[2].innerHTML
-            document.getElementById('edit_age').value = realUser[3].innerHTML
-            document.getElementById('edit_email').value = realUser[4].innerHTML
-            document.getElementById('1').selected = realUser[5].innerHTML.search('ADMIN') > 0
-            document.getElementById('2').selected = realUser[5].innerHTML.search('USER') > 0
-            // if (user.roles.length > 1) {
-            //     document.getElementById('1').selected = true
-            //     document.getElementById('2').selected = true
-            // }
+            document.getElementById('edit_id').value = `${user.id}`
+            document.getElementById('edit_name').value = `${user.name}`
+            document.getElementById('edit_surname').value = `${user.surname}`
+            document.getElementById('edit_age').value = `${user.age}`
+            document.getElementById('edit_email').value = `${user.email}`
+            // document.getElementById('edit_password').value = `${user.password}`
+            document.getElementById('1').selected = user.roles[0].id === 1
+            document.getElementById('2').selected = user.roles[0].id === 2
+            if (user.roles.length > 1) {
+                document.getElementById('1').selected = true
+                document.getElementById('2').selected = true
+            }
 
             const editBtn = document.getElementById('editSuccess')
             editBtn.onclick = (e) => {
@@ -117,18 +117,7 @@ async function patchRequest(user) {
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     })
-    .then(response => response.json())
-    .then(()=>
-        document.getElementById(`row${user.id}`).children[1].innerHTML=`${user.name}`)
-        .then(()=>
-            document.getElementById(`row${user.id}`).children[2].innerHTML=`${user.surname}`)
-        .then(()=>
-            document.getElementById(`row${user.id}`).children[3].innerHTML=`${user.age}`)
-        .then(()=>
-            document.getElementById(`row${user.id}`).children[4].innerHTML=`${user.email}`)
-        .then(()=>
-            user.roles.forEach(role =>
-            document.getElementById(`row${user.id}`).children[5].innerHTML=`${role.name.replaceAll('ROLE_','')}`))
+        .then(()=>location.reload())
 }
 
 async function postRequest(user) {
